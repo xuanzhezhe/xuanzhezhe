@@ -1,1 +1,86 @@
+//函数名全小写，自定义变量名首字母大写。
+//无返回值的函数运行出错exit(1);int返回值函数出错返回-1; bool返回值出错返回false;
+//参数的计数从1开始
+#include<stdio.h>
+#include<stdlib.h>
+//顺序表静态形式
+//#define maxsize 30
+//typedef int Datatype;
+//typedef struct SQLIST
+//{
+//	Datatype data[maxsize];
+//	int n;   //当前个数
+//} Seqlist;
 
+//动态形式
+#define initsize 30
+typedef int Datatype;
+typedef struct
+{
+	Datatype *data;
+	int maxsize;   //表的最大长度
+	int n;  //当前元素个数
+} Seqlist;
+void initlist(Seqlist &L)//初始化函数
+{
+	L.data=(Datatype*)malloc(initsize*sizeof(Datatype));
+	if(!L.data)
+	{
+		printf("error!");
+        exit(1);
+	}
+	L.maxsize=initsize;
+	L.n=0;
+}
+void clearlist(Seqlist &L)
+{
+	L.n=0;
+}
+int length(Seqlist &L)
+{
+	return L.n;
+}
+int Locate(Seqlist &L,int i)//定位第i个元素位置
+{
+	if(i>=1&&i<=L.n)
+	return i;
+	else
+	return -1;
+}
+int search(Seqlist &L,Datatype x)
+{
+	for(int i=0;i<L.n;i++)
+	{
+		if(L.data[i]==x)
+		return i;
+	}
+	return -1;
+}
+bool insert(Seqlist &L,int i,Datatype &x)//将x插入到第i位
+{
+	if(L.n==L.maxsize)
+	return false;
+	if(i<1||i>L.n+1)
+	return false;
+	for(int j=L.n;j>=i;j--)
+	{
+		L.data[j]=L.data[j-1];
+	}
+	L.data[i-1]=x;
+	L.n++;
+	return true;
+}
+bool remove(Seqlist &L,int i,Datatype &x)//引入x返回删除的第i个值
+{
+	if(!L.n)
+	return false;
+	if(i<1||i>L.n)
+	return false;
+	x=L.data[i-1];
+	for(int j=i;j<L.n;j++)
+	{
+		L.data[j-1]=L.data[j];
+	}
+	L.n--;
+	return true;
+}
