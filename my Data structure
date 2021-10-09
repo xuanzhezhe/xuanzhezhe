@@ -84,3 +84,4 @@ bool remove(Seqlist &L,int i,Datatype &x)//引入x返回删除的第i个值
 	L.n--;
 	return true;
 }
+
