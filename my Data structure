@@ -84,3 +84,72 @@ bool remove(Seqlist &L,int i,Datatype &x)//引入x返回删除的第i个值
 	L.n--;
 	return true;
 }
+//稀疏矩阵
+//顺序存储
+#define maxterms 30
+typedef int Datatype;
+typedef struct 
+{
+	int row, col;
+	Datatype value;
+} Triple;
+typedef struct
+{
+	int rows,cols,terms;//行数、列数、非零元素个数
+	Triple elem[maxterms];
+} Sparsematrix;
+void transpose(Sparsematrix &a,Sparsematrix &b)//求矩阵a的转置矩阵b；
+{
+	int currentb;
+	b.rows=a.cols;b.cols=a.rows;b.terms=a.terms;
+	if(a.terms>0)
+	{
+		currentb=0;
+		for(int k=0;k<a.cols;k++)
+		{
+			for(int i=0;i<a.terms;i++)
+			{
+				if(a.elem[i].col==k)
+				{
+					b.elem[currentb].row=k;
+					b.elem[currentb].col=a.elem[i].row;
+					b.elem[currentb].value=a.elem[i].value;
+					currentb++;
+				}
+			}
+		}
+	 } 
+}
+void fasttranspose(Sparsematrix &a,Sparsematrix &b)//快速转置
+{
+	int *rowsize=(int*)malloc(a.cols*sizeof(int));
+	int *rowstart=(int*)malloc(a.cols*sizeof(int));
+	int i,j;
+	b.rows=a.cols;b.cols=a.rows;b.terms=a.terms;
+	if(a.terms>0)
+	{
+		for(int i=0;i<a.cols;i++)
+		{
+			rowsize[i]=0;
+		}
+		for(int i=0;i<a.terms;i++)
+		{
+			rowsize[a.elem[i].col]++;
+		}
+		rowstart[0]=0;
+		for(int i=1;i<a.cols;i++)//计算转置后各行开始位置
+		{
+			rowstart[i]=rowstart[i-1]+rowsize[i-1];
+		}
+		for(int i=0;i<a.terms;i++)
+		{
+			j=rowstart[a.elem[i].col];
+			b.elem[j].row=a.elem[i].col;
+			b.elem[j].col=a.elem[i].row;
+			b.elem[j].value=a.elem[i].value;
+			rowstart[a.elem[i].col]++;
+		}	
+	}
+	free(rowsize);
+	free(rowstart);
+}
